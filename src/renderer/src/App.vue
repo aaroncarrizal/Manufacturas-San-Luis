@@ -7,7 +7,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <div class="wrapper">
             <nav class="navbar navbar-expand-lg bg-body-tertiary">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="/">
+                    <a class="navbar-brand" href="/parts">
                         <img src="./assets/icon.jpeg" alt="Bootstrap" width="30" height="30">
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
