@@ -14,29 +14,48 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="sku" class="form-label">SKU</label>
+                <label for="digits" class="form-label">Número de parte a 3 dígitos</label>
                 <input
-                    type="text"
+                    type="number"
                     class="form-control"
-                    id="sku"
-                    aria-describedby="skuHelp"
-                    v-model="part.sku"
+                    id="digits"
+                    aria-describedby="digits"
+                    v-model="part.digits"
+                    required
+                />
+            </div>
+            <div class="mb-3">
+                <label for="partNumber" class="form-label">Número de parte completo</label>
+                <input
+                    type="string"
+                    class="form-control"
+                    id="partNumber"
+                    aria-describedby="partNumber"
+                    v-model="part.partNumber"
+                    required
+                />
+            </div>
+            <div class="mb-3">
+                <label for="reference" class="form-label">Referencia</label>
+                <input
+                    type="string"
+                    class="form-control"
+                    id="reference"
+                    aria-describedby="reference"
+                    v-model="part.reference"
                     required
                 />
             </div>
             <div class="mb-3">
                 <label for="tokenId" class="form-label">Ficha relacionada</label>
-                <select
-                    class="form-select"
-                    aria-label="Default select example"
+                <input
+                    type="number"
+                    class="form-control"
                     id="tokenId"
+                    aria-describedby="tokenIdHelp"
                     v-model="part.tokenId"
                     required
-                >
-                    <option v-for="(token, index) in tokens" :key="index" :value="token.id">
-                        {{ token.id }}
-                    </option>
-                </select>
+                />
             </div>
             <div class="d-grid gap-2">
                 <button
@@ -60,38 +79,40 @@
         >
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <!-- <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                        ></button>
-                    </div> -->
                     <div class="modal-body">
-                        <h2>
-                            {{ this.message }}
-                        </h2>
+                        <template v-if="this.message">
+                            <h2>
+                                {{ this.message }}
+                            </h2>
+                        </template>
+                        <template v-else>
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border m-4" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                            </div>
+                        </template>
                     </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            data-bs-dismiss="modal"
-                            @click="registerNew()"
-                        >
-                            Registrar nueva
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                            @click="goToList()"
-                        >
-                            Ir a lista
-                        </button>
-                    </div>
+                    <template v-if="this.message">
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                @click="goToList()"
+                            >
+                                Ir a lista
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                                @click="registerNew()"
+                            >
+                                Registrar nueva(s)
+                            </button>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -103,16 +124,20 @@ import { getFreeTokens } from '../../../services/TokenService'
 import { createPart } from '../../../services/PartService'
 import router from '../../router'
 
+
+
 export default defineComponent({
     data() {
         return {
             part: {
-                qr: '',
-                sku: '',
+                qr: null,
+                digits: null,
+                partNumber: null,
+                reference: null,
                 tokenId: null
             },
             tokens: [],
-            message: ''
+            message: null,
         }
     },
     async beforeMount() {
@@ -144,13 +169,5 @@ export default defineComponent({
             window.location.reload()
         }
     },
-    watch: {
-        'part.qr': function (newQR) {
-            // Automatically set SKU to the first 5 characters of QR
-            if (this.part.qr && this.part.qr.length > 0) {
-                this.part.sku = newQR.slice(0, 5)
-            }
-        }
-    }
 })
 </script>
