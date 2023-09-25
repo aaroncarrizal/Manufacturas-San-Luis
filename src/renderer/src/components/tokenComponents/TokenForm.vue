@@ -44,28 +44,39 @@
                         ></button>
                     </div> -->
                     <div class="modal-body">
-                        <h2>
-                            {{ this.message }}
-                        </h2>
+                        <template v-if="this.message">
+                            <h2>
+                                {{ this.message }}
+                            </h2>
+                        </template>
+                        <template v-else>
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border m-4" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                            </div>
+                        </template>
                     </div>
-                    <div class="modal-footer">
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            data-bs-dismiss="modal"
-                            @click="goToList()"
-                        >
-                            Ir a lista
-                        </button>
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                            @click="registerNew()"
-                        >
-                            Registrar nueva(s)
-                        </button>
-                    </div>
+                    <template v-if="this.message">
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                @click="goToList()"
+                            >
+                                Ir a lista
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                                @click="registerNew()"
+                            >
+                                Registrar nueva(s)
+                            </button>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -80,7 +91,7 @@ export default defineComponent({
     data() {
         return {
             count: 1,
-            message: ''
+            message: null
         }
     },
     methods: {
