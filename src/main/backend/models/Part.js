@@ -14,7 +14,15 @@ const Part = db.define('Parts', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    sku: {
+    digits: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    partNumber: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    reference: {
         type: DataTypes.STRING,
         allowNull: false
     },
