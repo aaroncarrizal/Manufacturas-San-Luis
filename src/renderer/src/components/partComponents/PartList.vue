@@ -8,15 +8,18 @@
                 id="qr"
                 aria-describedby="qrHelp"
                 v-model="searchQuery"
-                placeholder="Buscar por QR o Ficha asociada"
+                placeholder="Buscar por QR, número de parte o ficha asociada"
             />
         </div>
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
                     <!-- <th>ID</th> -->
-                    <th>SKU</th>
                     <th>QR</th>
+                    <th>SKU</th>
+                    <th>3 dígitos</th>
+                    <th>Número de parte</th>
+                    <th>Referencia</th>
                     <th>Ficha asociada</th>
                     <th>Fecha de registro</th>
                     <th>Imprimir etiqueta</th>
@@ -25,14 +28,16 @@
             <tbody>
                 <template v-if="filteredParts.length > 0">
                     <tr v-for="(part, index) in filteredParts" :key="index">
-                        <td class="text-center align-middle">{{ part.sku }}</td>
                         <td>
                             <img
-                                :src="`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${part.qr}`"
-                                :alt="part.qr"
-                                :title="part.qr"
+                            :src="`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${part.qr}`"
+                            :title="part.qr"
                             />
                         </td>
+                        <td class="text-center align-middle">{{ part.qr }}</td>
+                        <td class="text-center align-middle">{{ part.digits }}</td>
+                        <td class="text-center align-middle">{{ part.partNumber }}</td>
+                        <td class="text-center align-middle">{{ part.reference }}</td>
                         <td class="text-center align-middle">{{ part.tokenId }}</td>
                         <td class="text-center align-middle">{{ formatDate(part.updatedAt) }}</td>
                         <td class="text-center align-middle">
@@ -102,7 +107,7 @@ export default defineComponent({
             const query = this.searchQuery.toLowerCase()
             return this.parts.filter((part) => {
                 return (
-                    part.qr.toLowerCase().includes(query) || part.tokenId.toString().includes(query)
+                    part.qr.toLowerCase().includes(query) || part.tokenId.toString().includes(query) || part.partNumber.toString().includes(query) || part.digits.toString().includes(query)
                 )
             })
         }

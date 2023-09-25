@@ -48,24 +48,29 @@
             </div>
             <div class="mb-3">
                 <label for="tokenId" class="form-label">Ficha relacionada</label>
-                <input
-                    type="number"
-                    class="form-control"
-                    id="tokenId"
-                    aria-describedby="tokenIdHelp"
+                <VueMultiselect
                     v-model="part.tokenId"
+                    :options="tokens"
+                    :allow-empty="false"
+                    placeholder=""
                     required
-                />
+                >
+                </VueMultiselect>
             </div>
             <div class="d-grid gap-2">
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                >
-                    Registrar
-                </button>
+                <template v-if="hasNullProperties(this.part)">
+                    <button type="submit" class="btn btn-secondary" disabled>Registrar</button>
+                </template>
+                <template v-else>
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                    >
+                        Registrar
+                    </button>
+                </template>
             </div>
         </form>
 
@@ -122,11 +127,11 @@
 import { defineComponent } from 'vue'
 import { getFreeTokens } from '../../../services/TokenService'
 import { createPart } from '../../../services/PartService'
+import VueMultiselect from 'vue-multiselect'
 import router from '../../router'
 
-
-
 export default defineComponent({
+    components: { VueMultiselect },
     data() {
         return {
             part: {
@@ -137,7 +142,7 @@ export default defineComponent({
                 tokenId: null
             },
             tokens: [],
-            message: null,
+            message: null
         }
     },
     async beforeMount() {
@@ -147,7 +152,9 @@ export default defineComponent({
         async loadTokens() {
             try {
                 const res = await getFreeTokens()
-                this.tokens = res.data
+                // Get only the IDS
+                this.tokens = res.data.map((token) => token.id)
+                console.log(this.tokens.length)
             } catch (error) {
                 console.log(error)
             }
@@ -162,12 +169,21 @@ export default defineComponent({
                 this.message = error
             }
         },
+        hasNullProperties(part) {
+            for (const key in part) {
+                if (part[key] === null) {
+                    return true // Return true if any property is null
+                }
+            }
+            return false // Return false if none of the properties are null
+        },
         goToList() {
             router.push('/parts')
         },
         registerNew() {
             window.location.reload()
         }
-    },
+    }
 })
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
