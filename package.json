@@ -28,7 +28,8 @@
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.33.0",
-    "vue-chartjs": "^5.2.0"
+    "vue-chartjs": "^5.2.0",
+    "vue-multiselect": "^3.0.0-beta.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",
