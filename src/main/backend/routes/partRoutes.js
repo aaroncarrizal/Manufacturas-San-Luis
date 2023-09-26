@@ -1,6 +1,12 @@
 import Part from '../models/Part'
 import Token from '../models/Token'
 import { Router } from 'express'
+import os from 'os'
+import fs from 'fs'
+import path from 'path'
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
+
 const router = Router()
 
 // Get all parts
@@ -83,25 +89,46 @@ router.delete('/parts/:id', async (req, res) => {
 })
 
 router.get('/parts/print/:id', async (req, res) => {
+    let filePath
     try {
+        // Get name of the PC
+        const hostname = os.hostname()
         const part = await Part.findByPk(req.params.id)
-        const zpl = `^XA
-^PW480  // Set the label print width to 5 cm (5 cm * 203 dpi = 480 dots)
-^LL200  // Set the label length to 2 cm (2 cm * 203 dpi = 200 dots)
-^FO0,10
-^BQN,2,10
-^FDMA,${part.qr}
-^FS
-^FO300,50
-^A0N,30,30  // Set font size, 30 dots wide and 30 dots high
-^FD
-SKU: ${part.sku}
-^FS
-^XZ`
+        if (part == null) {
+            throw new Error('Part was not found')
+        }
+        filePath = path.join(__dirname, `${part.tokenId}.zpl`)
+        fs.writeFileSync(filePath, 'content') // Write your content to the file
+
+        // Print label
+        const command = `COPY /B "${filePath}" "\\\\${hostname}\\ZDesigner"`
+        // const command = `start explorer.exe `
+
+        const { error, stdout, stderr } = await exec(command)
+
+        if (error) {
+            console.error(`Error: ${error.message}`)
+            // Delete generated file
+            fs.unlinkSync(filePath)
+            res.status(500).send(`Error: ${error.message}`)
+            return
+        }
+
+        if (stderr) {
+            console.error(`Error: ${stderr}`)
+            // Delete generated file
+            fs.unlinkSync(filePath)
+            res.status(500).send(`Error: ${stderr}`)
+            return
+        }
+
+        console.log(`Command output:\n${stdout}`)
+
         // Delete part
         await Part.destroy({
             where: { id: part.id }
         })
+
         // Free related token
         await Token.update(
             {
@@ -109,12 +136,14 @@ SKU: ${part.sku}
             },
             { where: { id: part.tokenId } }
         )
-
-        res.setHeader('Content-disposition', `attachment; filename=${part.tokenId}.zpl`)
-        res.setHeader('Content-type', 'application/octet-stream') // Use the appropriate content type for ZPL
-        res.send(zpl)
+        // Delete generated file
+        fs.unlinkSync(filePath)
+        res.send('Operation completed successfully.')
     } catch (error) {
-        res.status(404).send(error)
+        console.error(error)
+        // Delete generated file
+        fs.unlinkSync(filePath)
+        res.status(404).send(`Error: ${error.message}`)
     }
 })
 
