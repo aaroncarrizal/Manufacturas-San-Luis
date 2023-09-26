@@ -57,7 +57,7 @@
                 >
                 </VueMultiselect>
             </div>
-            <div class="d-grid gap-2">
+            <div class="d-grid gap-2 mb-3">
                 <template v-if="hasNullProperties(this.part)">
                     <button type="submit" class="btn btn-secondary" disabled>Registrar</button>
                 </template>
@@ -171,7 +171,7 @@ export default defineComponent({
         },
         hasNullProperties(part) {
             for (const key in part) {
-                if (part[key] === null) {
+                if (part[key] === null || part[key] == '') {
                     return true // Return true if any property is null
                 }
             }
