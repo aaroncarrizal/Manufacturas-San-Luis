@@ -41,18 +41,20 @@
                         <td class="text-center align-middle">{{ part.tokenId }}</td>
                         <td class="text-center align-middle">{{ formatDate(part.updatedAt) }}</td>
                         <td class="text-center align-middle">
-                            <a
+                            <button
                                 @click="goToPrintPage(part.id)"
                                 class="btn btn-primary"
                                 role="button"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
                             >
                                 <i class="bi bi-printer"></i>
-                            </a>
+                        </button>
                         </td>
                     </tr>
                 </template>
                 <template v-else>
-                    <td colspan="5">
+                    <td colspan="8">
                         <div class="mb-3 mt-3">
                             <h4 class="text-center">Sin registros</h4>
                         </div>
@@ -60,18 +62,60 @@
                 </template>
             </tbody>
         </table>
+
+        <!-- Modal -->
+        <div
+            class="modal fade"
+            id="exampleModal"
+            tabindex="-1"
+            data-bs-backdrop="static"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <template v-if="this.message">
+                            <h2>
+                                {{ this.message }}
+                            </h2>
+                        </template>
+                        <template v-else>
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border m-4" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <template v-if="this.message">
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                data-bs-dismiss="modal"
+                                @click="goToList()"
+                            >
+                                Ir a lista
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
 import { defineComponent } from 'vue'
-import { getParts } from '../../../services/PartService'
+import { getParts, printPart } from '../../../services/PartService'
 import router from '../../router'
 
 export default defineComponent({
     data() {
         return {
             parts: [],
-            searchQuery: ''
+            searchQuery: '',
+            message: null,
         }
     },
     mounted() {
@@ -94,12 +138,19 @@ export default defineComponent({
 
             return `${day}/${month}/${year}`
         },
-        goToPrintPage(partId) {
-            // router.push(`/parts/print/${partId}`);
-            window.location.href = `http://localhost:3000/api/parts/print/${partId}`
-            setTimeout(() => {
-                this.parts = this.parts.filter((part) => part.id !== partId)
-            }, 500) // 0.5 seconds
+        async goToPrintPage(partId) {
+            try {
+                const res = await printPart(partId)
+                console.log(res)
+                this.message = res.data.message
+                await this.loadParts()
+            } catch (error) {
+                this.message = error.response.data
+                console.log(error)
+            }
+        },
+        goToList(){
+            this.message = null
         }
     },
     computed: {

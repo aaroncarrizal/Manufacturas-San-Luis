@@ -91,26 +91,30 @@ router.delete('/parts/:id', async (req, res) => {
 router.get('/parts/print/:id', async (req, res) => {
     let filePath
     try {
-        // Get name of the PC
-        const hostname = os.hostname()
+
+        // Find part
         const part = await Part.findByPk(req.params.id)
         if (part == null) {
-            throw new Error('Part was not found')
+            res.status(404).send('Part was not found')
+            return
         }
-        filePath = path.join(__dirname, `${part.tokenId}.zpl`)
+
+        // Create zpl file
+        filePath = path.join(__dirname, `${part.tokenId}.txt`)
         fs.writeFileSync(filePath, 'content') // Write your content to the file
 
+        // Get name of the PC
+        const hostname = os.hostname()
         // Print label
-        const command = `COPY /B "${filePath}" "\\\\${hostname}\\ZDesigner"`
+        const command = `COPY /B "${filePath}" "\\\\${hostname}\\impresora"`
         // const command = `start explorer.exe `
-
         const { error, stdout, stderr } = await exec(command)
 
         if (error) {
             console.error(`Error: ${error.message}`)
             // Delete generated file
             fs.unlinkSync(filePath)
-            res.status(500).send(`Error: ${error.message}`)
+            res.status(500).send(`Error exec: ${error.message}`)
             return
         }
 
@@ -118,7 +122,7 @@ router.get('/parts/print/:id', async (req, res) => {
             console.error(`Error: ${stderr}`)
             // Delete generated file
             fs.unlinkSync(filePath)
-            res.status(500).send(`Error: ${stderr}`)
+            res.status(500).send(`STDErr: ${stderr}`)
             return
         }
 
@@ -136,14 +140,19 @@ router.get('/parts/print/:id', async (req, res) => {
             },
             { where: { id: part.tokenId } }
         )
+
         // Delete generated file
         fs.unlinkSync(filePath)
-        res.send('Operation completed successfully.')
+        // Send response
+        res.send({
+            message: 'Etiqueta impresa con éxito',
+            partId: part.id
+        })
     } catch (error) {
         console.error(error)
         // Delete generated file
         fs.unlinkSync(filePath)
-        res.status(404).send(`Error: ${error.message}`)
+        res.status(404).send(`Error: ${error}`)
     }
 })
 
