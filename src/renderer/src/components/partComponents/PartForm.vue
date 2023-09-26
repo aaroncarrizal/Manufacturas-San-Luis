@@ -80,6 +80,7 @@
             id="exampleModal"
             tabindex="-1"
             aria-labelledby="exampleModalLabel"
+            data-bs-backdrop="static"
             aria-hidden="true"
         >
             <div class="modal-dialog modal-dialog-centered">
