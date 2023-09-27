@@ -1,5 +1,6 @@
 import Part from '../models/Part'
 import Token from '../models/Token'
+import Model from '../models/Model'
 import { Router } from 'express'
 import os from 'os'
 import fs from 'fs'
@@ -13,6 +14,14 @@ const router = Router()
 router.get('/parts', async (req, res) => {
     try {
         const parts = await Part.findAll()
+        for (let part of parts) {
+            // Search associated model
+            let model = await Model.findByPk(part.modelId)
+            // Insert model info to part
+            part.dataValues.digits = model.digits
+            part.dataValues.partNumber = model.partNumber
+            part.dataValues.reference = model.reference
+        }
         res.send(parts)
     } catch (error) {
         res.send(error)
@@ -42,6 +51,12 @@ router.post('/parts', async (req, res) => {
 router.get('/parts/:id', async (req, res) => {
     try {
         const part = await Part.findByPk(req.params.id)
+        // Search associated model
+        const model = await Model.findByPk(part.modelId)
+        // Insert model info to part
+        part.dataValues.digits = model.digits
+        part.dataValues.partNumber = model.partNumber
+        part.dataValues.reference = model.reference
         res.send(part)
     } catch (error) {
         res.status(404).send(error)
@@ -54,8 +69,8 @@ router.patch('/parts/:id', async (req, res) => {
         const updatedPart = await Part.update(
             {
                 qr: req.body.qr,
-                sku: req.body.sku,
-                tokenId: req.body.tokenId
+                tokenId: req.body.tokenId,
+                modelId: req.body.modelId
             },
             { where: { id: req.params.id } }
         )
@@ -67,17 +82,19 @@ router.patch('/parts/:id', async (req, res) => {
 
 // Delete one part
 router.delete('/parts/:id', async (req, res) => {
+    console.log('asdfasdfasfadfas');
     try {
-        const part = await Part.destroy({
+        const part = await Part.findByPk(req.params.id)
+        const deletedPart = await Part.destroy({
             where: { id: req.params.id }
         })
-        if (part != 0) {
+        if (deletedPart != 0) {
             // Free related token
             await Token.update(
                 {
                     isOccupied: false
                 },
-                { where: { id: newPart.tokenId } }
+                { where: { id: part.tokenId } }
             )
             res.send('Part deleted succesfully')
         } else {
@@ -91,7 +108,6 @@ router.delete('/parts/:id', async (req, res) => {
 router.get('/parts/print/:id', async (req, res) => {
     let filePath
     try {
-
         // Find part
         const part = await Part.findByPk(req.params.id)
         if (part == null) {

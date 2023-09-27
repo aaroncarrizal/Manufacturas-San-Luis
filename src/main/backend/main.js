@@ -4,6 +4,7 @@ import cors from 'cors'
 import db from './db'
 import partRoutes from './routes/partRoutes'
 import tokenRoutes from './routes/tokenRoutes'
+import modelRoutes from './routes/modelRoutes'
 
 const backend = express()
 backend.use(cors())
@@ -11,6 +12,7 @@ backend.use(morgan('dev'))
 backend.use(express.json())
 backend.use('/api', partRoutes)
 backend.use('/api', tokenRoutes)
+backend.use('/api', modelRoutes)
 // Connect db
 db.connect()
 // Express server
