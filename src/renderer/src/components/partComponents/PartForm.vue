@@ -14,42 +14,45 @@
                 />
             </div>
             <div class="mb-3">
-                <label for="digits" class="form-label">Número de parte a 3 dígitos</label>
-                <input
-                    type="number"
-                    class="form-control"
-                    id="digits"
-                    aria-describedby="digits"
-                    v-model="part.digits"
+                <label for="tokenId" class="form-label">Dígitos</label>
+                <VueMultiselect
+                    v-model="this.part.modelId"
+                    :options="models"
+                    :allow-empty="false"
+                    placeholder=""
+                    track-by="id"
+                    label="digits"
                     required
-                />
+                    @select="updateModelData"
+                >
+                </VueMultiselect>
             </div>
             <div class="mb-3">
-                <label for="partNumber" class="form-label">Número de parte completo</label>
+                <label for="partNumber" class="form-label">Número de parte</label>
                 <input
-                    type="string"
+                    type="text"
                     class="form-control"
                     id="partNumber"
-                    aria-describedby="partNumber"
-                    v-model="part.partNumber"
-                    required
+                    aria-describedby="partNumberHelp"
+                    disabled
+                    :placeholder="partNumber"
                 />
             </div>
             <div class="mb-3">
                 <label for="reference" class="form-label">Referencia</label>
                 <input
-                    type="string"
+                    type="text"
                     class="form-control"
                     id="reference"
-                    aria-describedby="reference"
-                    v-model="part.reference"
-                    required
+                    aria-describedby="referenceHelp"
+                    disabled
+                    :placeholder="reference"
                 />
             </div>
             <div class="mb-3">
                 <label for="tokenId" class="form-label">Ficha relacionada</label>
                 <VueMultiselect
-                    v-model="part.tokenId"
+                    v-model="this.part.tokenId"
                     :options="tokens"
                     :allow-empty="false"
                     placeholder=""
@@ -127,6 +130,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { getFreeTokens } from '../../../services/TokenService'
+import { getModels } from '../../../services/ModelService'
 import { createPart } from '../../../services/PartService'
 import VueMultiselect from 'vue-multiselect'
 import router from '../../router'
@@ -137,17 +141,19 @@ export default defineComponent({
         return {
             part: {
                 qr: null,
-                digits: null,
-                partNumber: null,
-                reference: null,
+                modelId: null,
                 tokenId: null
             },
             tokens: [],
-            message: null
+            message: null,
+            models: [],
+            partNumber: '',
+            reference: ''
         }
     },
     async beforeMount() {
         await this.loadTokens()
+        await this.loadModels()
     },
     methods: {
         async loadTokens() {
@@ -155,13 +161,22 @@ export default defineComponent({
                 const res = await getFreeTokens()
                 // Get only the IDS
                 this.tokens = res.data.map((token) => token.id)
-                console.log(this.tokens.length)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async loadModels() {
+            try {
+                const res = await getModels()
+                this.models = res.data
             } catch (error) {
                 console.log(error)
             }
         },
         async savePart() {
             try {
+                // Get rid of unnecessary info
+                this.part.modelId = this.part.modelId.id
                 const res = await createPart(this.part)
                 console.log(res)
                 this.message = 'Parte registrada con éxito'
@@ -183,7 +198,11 @@ export default defineComponent({
         },
         registerNew() {
             window.location.reload()
-        }
+        },
+        updateModelData(model) {
+            this.partNumber = model.partNumber
+            this.reference = model.reference
+        },
     }
 })
 </script>
