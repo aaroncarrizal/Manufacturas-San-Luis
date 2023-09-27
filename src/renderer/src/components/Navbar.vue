@@ -33,6 +33,16 @@
                                     <li><router-link class="nav-link" to="/tokens/new">Registrar</router-link></li>
                                 </ul>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Modelos
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><router-link class="nav-link" to="/models">Ver lista</router-link></li>
+                                    <li><router-link class="nav-link" to="/models/new">Registrar</router-link></li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </div>

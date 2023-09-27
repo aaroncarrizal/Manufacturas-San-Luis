@@ -32,6 +32,16 @@ const router = createRouter({
       path: '/tokens/new',
       name: 'tokenForm',
       component: () => import ('../components/tokenComponents/TokenForm.vue')
+    },
+    {
+      path: '/models',
+      name: 'modelList',
+      component: () => import ('../components/modelComponents/modelList.vue')
+    },
+    {
+      path: '/models/new',
+      name: 'modelForm',
+      component: () => import ('../components/modelComponents/ModelForm.vue')
     }
   ]
 })
