@@ -110,6 +110,7 @@ router.get('/parts/print/:id', async (req, res) => {
     try {
         // Find part
         const part = await Part.findByPk(req.params.id)
+        const model = await Model.findByPk(part.modelId)
         if (part == null) {
             res.status(404).send('Part was not found')
             return
@@ -117,7 +118,32 @@ router.get('/parts/print/:id', async (req, res) => {
 
         // Create zpl file
         filePath = path.join(__dirname, `${part.tokenId}.txt`)
-        fs.writeFileSync(filePath, 'content') // Write your content to the file
+
+        const zpl = `^XA
+
+        ^FO120,20 // Initial position for QR code
+        ^BXN,10,200 // Data Matrix QR code
+        ^FDMA,${part.qr} ^FS // End QR code data
+        ^BY1,1 // Module width and height of 1 dot
+
+        ^LH0,0
+        ^FO300,25^A0B,25,20^FD${part.qr}^FS
+
+        ^FO350,20
+        ^A0N,36,36
+        ^FD${model.digits}^FS
+
+        ^FO350,70^GB50,10,10^FS
+        ^FO420,70^GB50,10,10^FS
+
+        ^FO350,120
+        ^A0N,30,30
+        ^FD${model.reference}^FS
+        ^XZ`
+
+        // console.log(zpl)
+
+        fs.writeFileSync(filePath, zpl) // Write your content to the file
 
         // Get name of the PC
         const hostname = os.hostname()
