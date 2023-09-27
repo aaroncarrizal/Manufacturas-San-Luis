@@ -59,7 +59,7 @@ router.delete('/models/:id', async (req, res) => {
             where: { id: req.params.id }
         })
         if (model != 0) {
-            res.send('Part number deleted succesfully')
+            res.send({message:'Modelo borrado con éxito'})
         } else {
             throw new Error('No part number found')
         }
