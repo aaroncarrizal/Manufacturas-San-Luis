@@ -2,11 +2,7 @@ import Part from '../models/Part'
 import Token from '../models/Token'
 import Model from '../models/Model'
 import { Router } from 'express'
-import os from 'os'
-import fs from 'fs'
-import path from 'path'
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
+import { print } from '../..'
 
 const router = Router()
 
@@ -106,7 +102,6 @@ router.delete('/parts/:id', async (req, res) => {
 })
 
 router.get('/parts/print/:id', async (req, res) => {
-    let filePath
     try {
         // Find part
         const part = await Part.findByPk(req.params.id)
@@ -116,60 +111,8 @@ router.get('/parts/print/:id', async (req, res) => {
             return
         }
 
-        // Create zpl file
-        filePath = path.join(__dirname, `${part.tokenId}.txt`)
-
-        const zpl = `^XA
-
-        ^FO120,20 // Initial position for QR code
-        ^BXN,10,200 // Data Matrix QR code
-        ^FDMA,${part.qr} ^FS // End QR code data
-        ^BY1,1 // Module width and height of 1 dot
-
-        ^LH0,0
-        ^FO300,25^A0B,25,20^FD${part.qr}^FS
-
-        ^FO350,20
-        ^A0N,36,36
-        ^FD${model.digits}^FS
-
-        ^FO350,70^GB50,10,10^FS
-        ^FO420,70^GB50,10,10^FS
-
-        ^FO350,120
-        ^A0N,30,30
-        ^FD${model.reference}^FS
-        ^XZ`
-
-        // console.log(zpl)
-
-        fs.writeFileSync(filePath, zpl) // Write your content to the file
-
-        // Get name of the PC
-        const hostname = os.hostname()
         // Print label
-        const command = `COPY /B "${filePath}" "\\\\${hostname}\\impresora"`
-        // const command = `start explorer.exe `
-        const { error, stdout, stderr } = await exec(command)
-
-        if (error) {
-            console.error(`Error: ${error.message}`)
-            // Delete generated file
-            fs.unlinkSync(filePath)
-            res.status(500).send(`Error exec: ${error.message}`)
-            return
-        }
-
-        if (stderr) {
-            console.error(`Error: ${stderr}`)
-            // Delete generated file
-            fs.unlinkSync(filePath)
-            res.status(500).send(`STDErr: ${stderr}`)
-            return
-        }
-
-        console.log(`Command output:\n${stdout}`)
-
+        const result = await print(part, model);
         // Delete part
         await Part.destroy({
             where: { id: part.id }
@@ -183,8 +126,6 @@ router.get('/parts/print/:id', async (req, res) => {
             { where: { id: part.tokenId } }
         )
 
-        // Delete generated file
-        fs.unlinkSync(filePath)
         // Send response
         res.send({
             message: 'Etiqueta impresa con éxito',
@@ -192,8 +133,6 @@ router.get('/parts/print/:id', async (req, res) => {
         })
     } catch (error) {
         console.error(error)
-        // Delete generated file
-        fs.unlinkSync(filePath)
         res.status(404).send(`Error: ${error}`)
     }
 })
