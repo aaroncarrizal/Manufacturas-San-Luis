@@ -83,25 +83,24 @@ export async function print(part, model) {
         filePath = path.join(`C:\\Users\\${user}\\Documents`, `${part.tokenId}.zpl`)
         const zpl = `^XA
 
-      ^FO120,20 // Initial position for QR code
-      ^BXN,10,200 // Data Matrix QR code
-      ^FDMA,${part.qr} ^FS // End QR code data
-      ^BY1,1 // Module width and height of 1 dot
+        ^FO90,20 // Initial position for QR code
+        ^BXN,4,200 // Data Matrix QR code
+        ^FDMA,${part.qr} ^FS // End QR code data
 
-      ^LH0,0
-      ^FO300,25^A0B,25,20^FD${part.qr}^FS
+        ^LH0,0
+        ^FO60,20^A0B,25,20^FD${part.qr}^FS
 
-      ^FO350,20
-      ^A0N,36,36
-      ^FD${model.digits}^FS
+        ^FO350,20
+        ^A0N,36,36
+        ^FD${model.digits}^FS
 
-      ^FO350,70^GB50,10,10^FS
-      ^FO420,70^GB50,10,10^FS
+        ^FO370,70^GB50,10,10^FS
+        ^FO440,70^GB50,10,10^FS
 
-      ^FO350,120
-      ^A0N,30,30
-      ^FD${model.reference}^FS
-      ^XZ`
+        ^FO350,120
+        ^A0N,30,30
+        ^FD${model.reference}^FS
+        ^XZ`
 
         fs.writeFileSync(filePath, zpl) // Write your content to the file
         // Get name of the PC
