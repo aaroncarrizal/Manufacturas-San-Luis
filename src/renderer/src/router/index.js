@@ -42,7 +42,13 @@ const router = createRouter({
       path: '/models/new',
       name: 'modelForm',
       component: () => import ('../components/modelComponents/ModelForm.vue')
+    },
+    {
+      path: '/models/edit/:id',
+      name: 'modelEdit',
+      component: () => import ('../components/modelComponents/ModelEdit.vue')
     }
+
   ]
 })
 

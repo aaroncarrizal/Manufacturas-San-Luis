@@ -17,6 +17,7 @@
                     <th>Número de parte</th>
                     <th>Referencia</th>
                     <th>Borrar</th>
+                    <th>Editar</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,6 +36,11 @@
                             >
                                 <i class="bi bi-trash"></i>
                             </button>
+                        </td>
+                        <td  class="text-center align-middle">
+                            <router-link :to="'/models/edit/' + model.id" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </router-link>
                         </td>
                     </tr>
                 </template>

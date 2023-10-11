@@ -15,3 +15,7 @@ export const getModel = async (modelId) => {
 export const deleteModel = async (modelId) => {
     return await axios.delete(`/models/${modelId}`)
 }
+
+export const updateModel = async (id, model) => {
+    return await axios.patch(`/models/${id}`, model)
+}
