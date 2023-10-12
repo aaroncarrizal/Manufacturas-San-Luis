@@ -71,11 +71,19 @@ router.patch('/parts/:id', async (req, res) => {
             },
             { where: { id: req.params.id } }
         )
-        const updatedToken = await Token.update(
+        // Free old token
+        const freedToken = await Token.update(
             {
                 isOccupied: false
             },
             { where: { id: oldPart.id}}
+        )
+        // Occuppy new token
+        const occupiedToken = await Token.update(
+            {
+                isOccupied: false
+            },
+            { where: { id: req.body.tokenId}}
         )
         res.send(updatedPart)
     } catch (error) {
@@ -85,7 +93,6 @@ router.patch('/parts/:id', async (req, res) => {
 
 // Delete one part
 router.delete('/parts/:id', async (req, res) => {
-    console.log('asdfasdfasfadfas');
     try {
         const part = await Part.findByPk(req.params.id)
         const deletedPart = await Part.destroy({

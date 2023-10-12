@@ -1,6 +1,6 @@
 <template>
     <div class="container-lg">
-        <p class="h1 text-center my-3">Registrar parte</p>
+        <p class="h1 text-center my-3">Editar parte</p>
         <form @submit.prevent="editPart()">
             <div class="mb-3">
                 <label for="qr" class="form-label">QR</label>
@@ -16,14 +16,12 @@
             <div class="mb-3">
                 <label for="tokenId" class="form-label">Dígitos</label>
                 <VueMultiselect
-                    v-model="this.part.modelId"
+                    v-model="this.selectedModel"
                     :options="models"
                     :allow-empty="false"
-                    placeholder=""
                     track-by="id"
                     label="digits"
                     required
-                    @select="updateModelData"
                 >
                 </VueMultiselect>
             </div>
@@ -35,7 +33,7 @@
                     id="partNumber"
                     aria-describedby="partNumberHelp"
                     disabled
-                    :placeholder="partNumber"
+                    :placeholder="this.selectedModel.partNumber"
                 />
             </div>
             <div class="mb-3">
@@ -46,7 +44,7 @@
                     id="reference"
                     aria-describedby="referenceHelp"
                     disabled
-                    :placeholder="reference"
+                    :placeholder="this.selectedModel.reference"
                 />
             </div>
             <div class="mb-3">
@@ -55,25 +53,41 @@
                     v-model="this.part.tokenId"
                     :options="tokens"
                     :allow-empty="false"
-                    placeholder=""
                     required
                 >
                 </VueMultiselect>
             </div>
-            <div class="d-grid gap-2 mb-3">
-                <template v-if="hasNullProperties(this.part)">
-                    <button type="submit" class="btn btn-secondary" disabled>Registrar</button>
-                </template>
-                <template v-else>
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                    >
-                        Registrar
-                    </button>
-                </template>
+            <div class="row">
+                <div class="col-6">
+                    <div class="d-grid gap-2 mb-3">
+                        <button
+                            @click="removePart()"
+                            type="button"
+                            class="btn btn-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                        >
+                            Borrar
+                        </button>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-grid gap-2 mb-3">
+                        <template v-if="hasNullProperties(this.part)">
+                            <button type="submit" class="btn btn-secondary" disabled>Editar</button>
+                        </template>
+                        <template v-else>
+                            <button
+                                type="submit"
+                                class="btn btn-warning"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                            >
+                                Editar
+                            </button>
+                        </template>
+                    </div>
+                </div>
             </div>
         </form>
 
@@ -123,7 +137,7 @@
 import { defineComponent } from 'vue'
 import { getFreeTokens } from '../../../services/TokenService'
 import { getModels } from '../../../services/ModelService'
-import { getPart, updatePart } from '../../../services/PartService'
+import { getPart, updatePart, deletePart } from '../../../services/PartService'
 import VueMultiselect from 'vue-multiselect'
 import router from '../../router'
 
@@ -131,27 +145,22 @@ export default defineComponent({
     components: { VueMultiselect },
     data() {
         return {
-            partId:'',
-            part: {
-                qr: null,
-                modelId: null,
-                tokenId: null
-            },
+            partId: '',
+            part: {},
             tokens: [],
             message: null,
             models: [],
-            partNumber: '',
-            reference: ''
+            selectedModel: {}
         }
     },
     async beforeMount() {
         this.partId = this.$route.params.id.toString()
         await this.loadPart()
-        await this.loadTokens()
+        await this.loadFreeTokens()
         await this.loadModels()
     },
     methods: {
-        async loadTokens() {
+        async loadFreeTokens() {
             try {
                 const res = await getFreeTokens()
                 // Get only the IDS
@@ -168,23 +177,31 @@ export default defineComponent({
                 console.log(error)
             }
         },
-        async loadPart(){
-            try{
+        async loadPart() {
+            try {
                 const res = await getPart(this.partId)
-                // console.log(res)
+                // Save part data
                 this.part = res.data
-                console.log(this.part);
+                // Save model data in a separate object
+                this.selectedModel.id = res.data.modelId
+                this.selectedModel.digits = res.data.digits
+                this.selectedModel.partNumber = res.data.partNumber
+                this.selectedModel.reference = res.data.reference
+                console.log(this.part)
             } catch (error) {
-                console.log(error);
+                console.log(error)
             }
         },
         async editPart() {
             try {
-                // Get rid of unnecessary info
-                this.part.modelId = this.part.modelId.id
+                // Construct part object
+                this.part.modelId = this.selectedModel.id
+                delete this.part.digits
+                delete this.part.partNumber
+                delete this.part.reference
                 const res = await updatePart(this.partId, this.part)
                 console.log(res)
-                this.message = 'Parte registrada con éxito'
+                this.message = 'Parte editada con éxito'
             } catch (error) {
                 console.log(error)
                 this.message = error
@@ -201,10 +218,16 @@ export default defineComponent({
         goToList() {
             router.push('/parts')
         },
-        updateModelData(model) {
-            this.partNumber = model.partNumber
-            this.reference = model.reference
-        },
+        async removePart() {
+            try {
+                const res = await deletePart(this.partId)
+                console.log(res)
+                this.message = 'Parte borrada con éxito'
+            } catch (error) {
+                console.log(error)
+                this.message = error
+            }
+        }
     }
 })
 </script>

@@ -19,3 +19,7 @@ export const printPart = async (partId) => {
 export const updatePart = async (id, part) => {
     return await axios.patch(`/parts/${id}`, part)
 }
+
+export const deletePart = async (id) => {
+    return await axios.delete(`/parts/${id}`)
+}
