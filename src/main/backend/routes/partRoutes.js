@@ -63,7 +63,7 @@ router.get('/parts/:id', async (req, res) => {
 router.patch('/parts/:id', async (req, res) => {
     try {
         const oldPart = await Part.findByPk(req.params.id)
-        const updatedPart = await Part.update(
+        await Part.update(
             {
                 qr: req.body.qr,
                 tokenId: req.body.tokenId,
@@ -72,20 +72,20 @@ router.patch('/parts/:id', async (req, res) => {
             { where: { id: req.params.id } }
         )
         // Free old token
-        const freedToken = await Token.update(
+        await Token.update(
             {
                 isOccupied: false
             },
-            { where: { id: oldPart.id}}
+            { where: { id: oldPart.tokenId}}
         )
         // Occuppy new token
-        const occupiedToken = await Token.update(
+        await Token.update(
             {
-                isOccupied: false
+                isOccupied: true
             },
             { where: { id: req.body.tokenId}}
         )
-        res.send(updatedPart)
+        res.send(oldPart)
     } catch (error) {
         res.send(error)
     }
