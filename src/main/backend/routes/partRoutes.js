@@ -62,6 +62,7 @@ router.get('/parts/:id', async (req, res) => {
 // Edit one part
 router.patch('/parts/:id', async (req, res) => {
     try {
+        const oldPart = await Part.findByPk(req.params.id)
         const updatedPart = await Part.update(
             {
                 qr: req.body.qr,
@@ -69,6 +70,12 @@ router.patch('/parts/:id', async (req, res) => {
                 modelId: req.body.modelId
             },
             { where: { id: req.params.id } }
+        )
+        const updatedToken = await Token.update(
+            {
+                isOccupied: false
+            },
+            { where: { id: oldPart.id}}
         )
         res.send(updatedPart)
     } catch (error) {

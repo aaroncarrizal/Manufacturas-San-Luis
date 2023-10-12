@@ -15,3 +15,7 @@ export const getPart = async (partId) => {
 export const printPart = async (partId) => {
     return await axios.get(`/parts/print/${partId}`)
 }
+
+export const updatePart = async (id, part) => {
+    return await axios.patch(`/parts/${id}`, part)
+}

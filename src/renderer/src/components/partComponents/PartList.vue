@@ -23,6 +23,7 @@
                     <th>Ficha asociada</th>
                     <th>Fecha de registro</th>
                     <th>Imprimir etiqueta</th>
+                    <th>Editar</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,6 +51,11 @@
                             >
                                 <i class="bi bi-printer"></i>
                         </button>
+                        </td>
+                        <td class="text-center align-middle">
+                            <router-link :to="'/parts/edit/' + part.id" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i>
+                            </router-link>
                         </td>
                     </tr>
                 </template>

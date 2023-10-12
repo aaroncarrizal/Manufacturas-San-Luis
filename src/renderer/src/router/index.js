@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import ('../components/partComponents/PartForm.vue')
     },
     {
+      path: '/parts/edit/:id',
+      name: 'partEdit',
+      component: () => import ('../components/partComponents/PartEdit.vue')
+    },
+    {
       path: '/parts/print/:id',
       name: 'printPart',
       component: () => import ('../components/partComponents/PrintPart.vue')
