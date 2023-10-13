@@ -6,35 +6,39 @@
                 type="text"
                 class="form-control"
                 id="search"
-                v-model="searchQuery"
+                v-model="searchValue"
                 placeholder="Buscar por número"
             />
         </div>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Estado</th>
-                    <th>Fecha de registro</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template v-if="filteredTokens.length > 0">
-                    <tr v-for="(token, index) in filteredTokens" :key="index">
-                        <td>{{ token.id }}</td>
-                        <td>{{ token.isOccupied ? 'Ocupada' : 'Libre' }}</td>
-                        <td>{{ formatDate(token.updatedAt) }}</td>
-                    </tr>
-                </template>
-                <template v-else>
-                    <td colspan="3">
-                        <div class="mb-3 mt-3">
-                            <h4 class="text-center">Sin registros</h4>
-                        </div>
-                    </td>
-                </template>
-            </tbody>
-        </table>
+        <EasyDataTable
+            :headers="headers"
+            :items="tokens"
+            :search-value="searchValue"
+            alternating
+            buttons-pagination
+        >
+            <template #loading>
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </template>
+
+            <template #empty-message>
+                <div class="mb-3 mt-3">
+                    <h4 class="text-center">Sin registros</h4>
+                </div>
+            </template>
+
+            <template #item-isOccupied="item">
+                {{ item.isOccupied ? 'Ocupada' : 'Libre' }}
+            </template>
+
+            <template #item-updatedAt="item">
+                {{ formatDate(item.updatedAt) }}
+            </template>
+        </EasyDataTable>
     </div>
 </template>
 <script>
@@ -44,8 +48,13 @@ import { getTokens } from '../../../services/TokenService'
 export default defineComponent({
     data() {
         return {
+            searchValue: '',
             tokens: [],
-            searchQuery: ''
+            headers: [
+                { text: 'ID', value: 'id' },
+                { text: 'Estado', value: 'isOccupied' },
+                { text: 'Fecha de registro', value: 'updatedAt' }
+            ]
         }
     },
     mounted() {
@@ -67,16 +76,6 @@ export default defineComponent({
             const year = date.getFullYear()
 
             return `${day}/${month}/${year}`
-        }
-    },
-    computed: {
-        filteredTokens() {
-            const query = this.searchQuery.toLowerCase()
-            return this.tokens.filter((token) => {
-                return (
-                    token.id.toString().includes(query)
-                )
-            })
         }
     }
 })
