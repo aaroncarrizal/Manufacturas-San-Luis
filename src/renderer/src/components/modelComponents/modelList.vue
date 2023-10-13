@@ -2,12 +2,12 @@
     <div class="container-lg">
         <h1 class="text-center my-3">Modelos registrados</h1>
         <input
-                type="text"
-                class="form-control my-3"
-                id="search"
-                v-model="searchValue"
-                placeholder="Buscar por dígitos o número de parte"
-            />
+            type="text"
+            class="form-control my-3"
+            id="search"
+            v-model="searchValue"
+            placeholder="Buscar por dígitos o número de parte"
+        />
         <EasyDataTable
             :headers="headers"
             :items="models"
@@ -20,6 +20,12 @@
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
+                </div>
+            </template>
+
+            <template #empty-message>
+                <div class="mb-3 mt-3">
+                    <h4 class="text-center">Sin registros</h4>
                 </div>
             </template>
 
@@ -53,7 +59,6 @@ import { getModels, deleteModel } from '../../../services/ModelService'
 export default defineComponent({
     data() {
         return {
-            searchField: '',
             searchValue: '',
             models: [],
             message: null,
@@ -92,17 +97,6 @@ export default defineComponent({
         },
         goToList() {
             this.message = null
-        }
-    },
-    computed: {
-        filteredModels() {
-            const query = this.searchQuery.toLowerCase()
-            return this.models.filter((model) => {
-                return (
-                    model.digits.toString().includes(query) ||
-                    model.partNumber.toString().includes(query)
-                )
-            })
         }
     }
 })
