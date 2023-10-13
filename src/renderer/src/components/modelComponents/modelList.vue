@@ -1,99 +1,49 @@
 <template>
     <div class="container-lg">
-        <p class="h1 text-center my-3">Modelos registrados</p>
-        <div class="mb-3">
-            <input
+        <h1 class="text-center my-3">Modelos registrados</h1>
+        <input
                 type="text"
-                class="form-control"
+                class="form-control my-3"
                 id="search"
-                v-model="searchQuery"
+                v-model="searchValue"
                 placeholder="Buscar por dígitos o número de parte"
             />
-        </div>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Dígitos</th>
-                    <th>Número de parte</th>
-                    <th>Referencia</th>
-                    <th>Borrar</th>
-                    <th>Editar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template v-if="filteredModels.length > 0">
-                    <tr v-for="(model, index) in filteredModels" :key="index">
-                        <td  class="text-center align-middle">{{ model.digits }}</td>
-                        <td  class="text-center align-middle">{{ model.partNumber }}</td>
-                        <td  class="text-center align-middle">{{ model.reference }}</td>
-                        <td  class="text-center align-middle">
-                            <button
-                                @click="removeModel(model.id)"
-                                class="btn btn-danger"
-                                role="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"
-                            >
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                        <td  class="text-center align-middle">
-                            <router-link :to="'/models/edit/' + model.id" class="btn btn-primary">
-                                <i class="bi bi-pencil"></i>
-                            </router-link>
-                        </td>
-                    </tr>
-                </template>
-                <template v-else>
-                    <td colspan="3">
-                        <div class="mb-3 mt-3">
-                            <h4 class="text-center">Sin registros</h4>
-                        </div>
-                    </td>
-                </template>
-            </tbody>
-        </table>
-
-        <!-- Modal -->
-        <div
-            class="modal fade"
-            id="exampleModal"
-            tabindex="-1"
-            data-bs-backdrop="static"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
+        <EasyDataTable
+            :headers="headers"
+            :items="models"
+            :search-value="searchValue"
+            alternating
+            buttons-pagination
         >
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <template v-if="this.message">
-                            <h2 class="text-wrap">
-                                {{ this.message }}
-                            </h2>
-                        </template>
-                        <template v-else>
-                            <div class="d-flex justify-content-center">
-                                <div class="spinner-border m-4" role="status">
-                                    <span class="visually-hidden">Cargando...</span>
-                                </div>
-                            </div>
-                        </template>
+            <template #loading>
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
-                    <template v-if="this.message">
-                        <div class="modal-footer">
-                            <button
-                                type="button"
-                                class="btn btn-primary"
-                                data-bs-dismiss="modal"
-                                @click="goToList()"
-                            >
-                                Ir a lista
-                            </button>
-                        </div>
-                    </template>
                 </div>
-            </div>
-        </div>
+            </template>
+
+            <template #item-delete="item">
+                <div class="operation-wrapper">
+                    <button
+                        @click="removeModel(item.id)"
+                        class="btn btn-danger"
+                        role="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                    >
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </template>
+            <template #item-edit="item">
+                <div class="operation-wrapper">
+                    <router-link :to="'/models/edit/' + item.id" class="btn btn-primary">
+                        <i class="bi bi-pencil"></i>
+                    </router-link>
+                </div>
+            </template>
+        </EasyDataTable>
     </div>
 </template>
 <script>
@@ -103,9 +53,17 @@ import { getModels, deleteModel } from '../../../services/ModelService'
 export default defineComponent({
     data() {
         return {
+            searchField: '',
+            searchValue: '',
             models: [],
-            searchQuery: '',
-            message: null
+            message: null,
+            headers: [
+                { text: 'Dígitos', value: 'digits' },
+                { text: 'Número de parte', value: 'partNumber' },
+                { text: 'Referencia', value: 'reference' },
+                { text: 'Editar', value: 'edit' },
+                { text: 'Borrar', value: 'delete' }
+            ]
         }
     },
     mounted() {
@@ -127,11 +85,12 @@ export default defineComponent({
                 this.message = res.data.message
                 await this.loadModels()
             } catch (error) {
-                this.message = 'No se puede borrar este modelo porque existen partes con este modelo registradas'
+                this.message =
+                    'No se puede borrar este modelo porque existen partes con este modelo registradas'
                 console.log(error)
             }
         },
-        goToList(){
+        goToList() {
             this.message = null
         }
     },
