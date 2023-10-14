@@ -7,67 +7,53 @@
                 class="form-control"
                 id="qr"
                 aria-describedby="qrHelp"
-                v-model="searchQuery"
+                v-model="searchValue"
                 placeholder="Buscar por QR, número de parte o ficha asociada"
             />
         </div>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <!-- <th>ID</th> -->
-                    <th>QR</th>
-                    <th>SKU</th>
-                    <th>3 dígitos</th>
-                    <th>Número de parte</th>
-                    <th>Referencia</th>
-                    <th>Ficha asociada</th>
-                    <th>Fecha de registro</th>
-                    <th>Imprimir etiqueta</th>
-                    <th>Editar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <template v-if="filteredParts.length > 0">
-                    <tr v-for="(part, index) in filteredParts" :key="index">
-                        <td>
-                            <img
-                            :src="`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${part.qr}`"
-                            :title="part.qr"
-                            />
-                        </td>
-                        <td class="text-center align-middle">{{ part.qr }}</td>
-                        <td class="text-center align-middle">{{ part.digits }}</td>
-                        <td class="text-center align-middle">{{ part.partNumber }}</td>
-                        <td class="text-center align-middle">{{ part.reference }}</td>
-                        <td class="text-center align-middle">{{ part.tokenId }}</td>
-                        <td class="text-center align-middle">{{ formatDate(part.updatedAt) }}</td>
-                        <td class="text-center align-middle">
-                            <button
-                                @click="goToPrintPage(part.id)"
-                                class="btn btn-primary"
-                                role="button"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"
-                            >
-                                <i class="bi bi-printer"></i>
-                        </button>
-                        </td>
-                        <td class="text-center align-middle">
-                            <router-link :to="'/parts/edit/' + part.id" class="btn btn-primary">
-                                <i class="bi bi-pencil"></i>
-                            </router-link>
-                        </td>
-                    </tr>
-                </template>
-                <template v-else>
-                    <td colspan="8">
-                        <div class="mb-3 mt-3">
-                            <h4 class="text-center">Sin registros</h4>
-                        </div>
-                    </td>
-                </template>
-            </tbody>
-        </table>
+        <EasyDataTable
+            :headers="headers"
+            :items="parts"
+            :search-value="searchValue"
+            alternating
+            buttons-pagination
+        >
+            <template #loading>
+                <div class="d-flex justify-content-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </template>
+
+            <template #empty-message>
+                <div class="mb-3 mt-3">
+                    <h4 class="text-center">Sin registros</h4>
+                </div>
+            </template>
+
+            <template #item-edit="item">
+                <div class="operation-wrapper">
+                    <router-link :to="'/parts/edit/' + item.id" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </router-link>
+                </div>
+            </template>
+
+            <template #item-print="item">
+                <div class="operation-wrapper">
+                    <button
+                        @click="goToPrintPage(item.id)"
+                        class="btn btn-primary"
+                        role="button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                    >
+                        <i class="bi bi-printer"></i>
+                    </button>
+                </div>
+            </template>
+        </EasyDataTable>
 
         <!-- Modal -->
         <div
@@ -114,14 +100,23 @@
 <script>
 import { defineComponent } from 'vue'
 import { getParts, printPart } from '../../../services/PartService'
-import router from '../../router'
 
 export default defineComponent({
     data() {
         return {
             parts: [],
-            searchQuery: '',
+            searchValue: '',
             message: null,
+            headers: [
+                { text: 'QR', value: 'qr' },
+                { text: 'SKU', value: 'qr' },
+                { text: 'Dígitos', value: 'digits' },
+                { text: 'Número de parte', value: 'partNumber' },
+                { text: 'Ficha asociada', value: 'tokenId' },
+                { text: 'Fecha de registro', value: 'updatedAt' },
+                { text: 'Imprimir etiqueta', value: 'print' },
+                { text: 'Editar', value: 'edit' }
+            ]
         }
     },
     mounted() {
@@ -155,18 +150,8 @@ export default defineComponent({
                 console.log(error)
             }
         },
-        goToList(){
+        goToList() {
             this.message = null
-        }
-    },
-    computed: {
-        filteredParts() {
-            const query = this.searchQuery.toLowerCase()
-            return this.parts.filter((part) => {
-                return (
-                    part.qr.toLowerCase().includes(query) || part.tokenId.toString().includes(query) || part.partNumber.toString().includes(query) || part.digits.toString().includes(query)
-                )
-            })
         }
     }
 })
