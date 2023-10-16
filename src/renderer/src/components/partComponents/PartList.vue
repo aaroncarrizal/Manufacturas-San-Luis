@@ -32,6 +32,17 @@
                 </div>
             </template>
 
+            <template #item-qr="item">
+                <img
+                    :src="`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${item.qr}`"
+                    :title="item.qr"
+                />
+            </template>
+
+            <template #item-sku="item">
+                {{ item.qr }}
+            </template>
+
             <template #item-edit="item">
                 <div class="operation-wrapper">
                     <router-link :to="'/parts/edit/' + item.id" class="btn btn-warning">
@@ -109,7 +120,7 @@ export default defineComponent({
             message: null,
             headers: [
                 { text: 'QR', value: 'qr' },
-                { text: 'SKU', value: 'qr' },
+                { text: 'SKU', value: 'sku' },
                 { text: 'Dígitos', value: 'digits' },
                 { text: 'Número de parte', value: 'partNumber' },
                 { text: 'Ficha asociada', value: 'tokenId' },
