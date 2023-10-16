@@ -52,7 +52,12 @@ const router = createRouter({
       path: '/models/edit/:id',
       name: 'modelEdit',
       component: () => import ('../components/modelComponents/ModelEdit.vue')
-    }
+    },
+    {
+      path: '/printedLabels',
+      name: 'printedLabelList',
+      component: () => import ('../components/printedLabelComponents/printedLabelList.vue')
+    },
 
   ]
 })

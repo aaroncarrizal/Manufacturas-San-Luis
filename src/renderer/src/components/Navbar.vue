@@ -43,6 +43,9 @@
                                     <li><router-link class="nav-link" to="/models/new">Registrar</router-link></li>
                                 </ul>
                             </li>
+                            <li class="nav-item ">
+                                <router-link class="nav-link" to="/printedLabels">Etiquetas impresas</router-link>
+                            </li>
                         </ul>
                     </div>
                 </div>
