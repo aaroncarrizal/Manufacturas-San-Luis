@@ -43,6 +43,10 @@
                 {{ item.qr }}
             </template>
 
+            <template #item-updatedAt="item">
+                {{ formatDate(item.updatedAt) }}
+            </template>
+
             <template #item-edit="item">
                 <div class="operation-wrapper">
                     <router-link :to="'/parts/edit/' + item.id" class="btn btn-warning">
