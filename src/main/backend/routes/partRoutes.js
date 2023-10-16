@@ -3,6 +3,7 @@ import Token from '../models/Token'
 import Model from '../models/Model'
 import { Router } from 'express'
 import { print } from '../..'
+import PrintedLabel from '../models/PrintedLabel'
 
 const router = Router()
 
@@ -76,14 +77,14 @@ router.patch('/parts/:id', async (req, res) => {
             {
                 isOccupied: false
             },
-            { where: { id: oldPart.tokenId}}
+            { where: { id: oldPart.tokenId } }
         )
         // Occuppy new token
         await Token.update(
             {
                 isOccupied: true
             },
-            { where: { id: req.body.tokenId}}
+            { where: { id: req.body.tokenId } }
         )
         res.send(oldPart)
     } catch (error) {
@@ -126,7 +127,15 @@ router.get('/parts/print/:id', async (req, res) => {
         }
 
         // Print label
-        const result = await print(part, model);
+        const result = await print(part, model)
+        // Save printed data
+        const printedLabel = await new PrintedLabel({
+            qr: part.qr,
+            digits: model.digits,
+            partNumber: model.partNumber,
+            reference: model.reference
+        })
+        await printedLabel.save()
         // Delete part
         await Part.destroy({
             where: { id: part.id }

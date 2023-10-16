@@ -5,6 +5,7 @@ import db from './db'
 import partRoutes from './routes/partRoutes'
 import tokenRoutes from './routes/tokenRoutes'
 import modelRoutes from './routes/modelRoutes'
+import printedLabelRoutes from './routes/printedLabelRoutes'
 
 const backend = express()
 backend.use(cors())
@@ -13,6 +14,7 @@ backend.use(express.json())
 backend.use('/api', partRoutes)
 backend.use('/api', tokenRoutes)
 backend.use('/api', modelRoutes)
+backend.use('/api', printedLabelRoutes)
 // Connect db
 db.connect()
 // Express server
