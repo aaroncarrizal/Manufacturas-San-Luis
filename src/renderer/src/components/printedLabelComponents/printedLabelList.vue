@@ -1,15 +1,29 @@
 <template>
     <div class="container-lg">
-        <p class="h1 text-center my-3">Etiquetas impresas</p>
-        <div class="mb-3">
-            <input
-                type="text"
-                class="form-control"
-                id="qr"
-                aria-describedby="qrHelp"
-                v-model="searchValue"
-                placeholder="Buscar por QR, número de parte o referencia"
-            />
+        <div class="row">
+            <h1 class="text-center my-3">Etiquetas impresas</h1>
+        </div>
+        <div class="row">
+            <div class="mb-3">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="qr"
+                    aria-describedby="qrHelp"
+                    v-model="searchValue"
+                    placeholder="Buscar por QR, número de parte o referencia"
+                />
+            </div>
+        </div>
+        <div class="row">
+            <div class="mb-3 d-flex align-items-center">
+                <h3 class="me-3">Exportar:</h3>
+                <div class="btn-group">
+                    <a href="http://localhost:3000/api/export/printedLabels/today" class="btn btn-primary">Hoy</a>
+                    <a href="http://localhost:3000/api/export/printedLabels/week" class="btn btn-primary">Semana</a>
+                    <a href="http://localhost:3000/api/export/printedLabels/month" class="btn btn-primary">Mes</a>
+                </div>
+            </div>
         </div>
         <EasyDataTable
             :headers="headers"
@@ -123,7 +137,7 @@ export default defineComponent({
     },
     async mounted() {
         await this.loadPrintedLabels()
-        console.log(this.printedLabels);
+        console.log(this.printedLabels)
     },
     methods: {
         async loadPrintedLabels() {
