@@ -41,7 +41,7 @@ router.patch('/models/:id', async (req, res) => {
         const updatedModel = await Model.update(
             {
                 digits: req.body.digits,
-                model: req.body.model,
+                partNumber: req.body.partNumber,
                 reference: req.body.reference
             },
             { where: { id: req.params.id } }
