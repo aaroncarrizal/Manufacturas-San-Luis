@@ -145,7 +145,7 @@ router.get('/export/printedLabels/today', async (req, res) => {
             'Content-Type',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        res.setHeader('Content-Disposition', `attachment; filename=Reporte - ${formattedDate}.xlsx`)
+        res.setHeader('Content-Disposition', `attachment; filename=ReporteDiario - ${formattedDate}.xlsx`)
         res.send(xlsxBuffer)
     } catch (error) {
         console.error(error)
@@ -233,7 +233,7 @@ router.get('/export/printedLabels/month', async (req, res) => {
             'Content-Type',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        res.setHeader('Content-Disposition', `attachment; filename=Reporte - ${formattedDate}.xlsx`)
+        res.setHeader('Content-Disposition', `attachment; filename=ReporteSemanal - ${formattedDate}.xlsx`)
         res.send(xlsxBuffer)
     } catch (error) {
         console.error(error)
