@@ -100,10 +100,6 @@ export async function print(part, model) {
         ^A0N,15,15
         ^FD${model.reference}^FS
 
-        ^FO95,80
-        ^A0N,12,12
-        ^FD${model.partNumber}^FS
-
         ^XZ`
 
         fs.writeFileSync(filePath, zpl) // Write your content to the file
