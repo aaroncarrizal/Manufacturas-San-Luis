@@ -82,18 +82,18 @@ export async function print(part, model) {
         const user = os.userInfo().username
         filePath = path.join(`C:\\Users\\${user}\\Documents`, `${part.tokenId}.zpl`)
         const zpl = `^XA
-        ^FO5,30
+        ^FO5,25
         ^BXN,4,200
         ^FD${part.qr}^FS
 
         ^LH0,0
-        ^FO75,20^A0B,15,12^FD${part.qr}^FS
+        ^FO80,20^A0B,15,12^FD${part.qr}^FS
 
         ^FO110,20
         ^A0N,22,22
         ^FD${model.digits}^FS
 
-        ^FO95,45^GB20,10,10^FS
+        ^FO100,45^GB20,10,10^FS
         ^FO135,45^GB20,10,10^FS
 
         ^FO95,60
