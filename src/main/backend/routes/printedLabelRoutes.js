@@ -76,7 +76,7 @@ function getFormattedDate() {
 }
 
 // Export all printed labels as XLSX file
-router.get('/export/all', async (req, res) => {
+router.get('/export/printedLabels/all', async (req, res) => {
     const formattedDate = getFormattedDate()
     const workbook = new Workbook()
     const worksheet = workbook.addWorksheet(`Reporte`)
@@ -89,6 +89,7 @@ router.get('/export/all', async (req, res) => {
             { header: 'Dígitos', key: 'digits', width: 15 },
             { header: 'Núero de parte', key: 'partNumber', width: 15 },
             { header: 'Referencia', key: 'reference', width: 15 },
+            { header: 'Ficha que se usó', key: 'tokenId', width: 15 },
             { header: 'Fecha de impresión', key: 'createdAt', width: 20 }
         ]
         printedLabels.forEach((label) => {
@@ -133,6 +134,7 @@ router.get('/export/printedLabels/today', async (req, res) => {
             { header: 'Dígitos', key: 'digits', width: 15 },
             { header: 'Núero de parte', key: 'partNumber', width: 15 },
             { header: 'Referencia', key: 'reference', width: 15 },
+            { header: 'Ficha que se usó', key: 'tokenId', width: 15 },
             { header: 'Fecha de impresión', key: 'createdAt', width: 20 }
         ]
         printedLabels.forEach((label) => {
@@ -177,6 +179,7 @@ router.get('/export/printedLabels/week', async (req, res) => {
             { header: 'Dígitos', key: 'digits', width: 15 },
             { header: 'Núero de parte', key: 'partNumber', width: 15 },
             { header: 'Referencia', key: 'reference', width: 15 },
+            { header: 'Ficha que se usó', key: 'tokenId', width: 15 },
             { header: 'Fecha de impresión', key: 'createdAt', width: 20 }
         ]
         printedLabels.forEach((label) => {
@@ -221,6 +224,7 @@ router.get('/export/printedLabels/month', async (req, res) => {
             { header: 'Dígitos', key: 'digits', width: 15 },
             { header: 'Núero de parte', key: 'partNumber', width: 15 },
             { header: 'Referencia', key: 'reference', width: 15 },
+            { header: 'Ficha que se usó', key: 'tokenId', width: 15 },
             { header: 'Fecha de impresión', key: 'createdAt', width: 20 }
         ]
         printedLabels.forEach((label) => {
@@ -233,7 +237,7 @@ router.get('/export/printedLabels/month', async (req, res) => {
             'Content-Type',
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        res.setHeader('Content-Disposition', `attachment; filename=ReporteSemanal - ${formattedDate}.xlsx`)
+        res.setHeader('Content-Disposition', `attachment; filename=ReporteMensual - ${formattedDate}.xlsx`)
         res.send(xlsxBuffer)
     } catch (error) {
         console.error(error)

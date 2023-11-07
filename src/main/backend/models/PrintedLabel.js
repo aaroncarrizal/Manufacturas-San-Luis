@@ -25,6 +25,11 @@ const PrintedLabel = db.define('PrintedLabels', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    tokenId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+    }
 })
 
 export default PrintedLabel

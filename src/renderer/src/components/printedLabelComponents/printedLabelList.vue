@@ -22,6 +22,7 @@
                     <a href="http://localhost:3000/api/export/printedLabels/today" class="btn btn-primary">Hoy</a>
                     <a href="http://localhost:3000/api/export/printedLabels/week" class="btn btn-primary">Semana</a>
                     <a href="http://localhost:3000/api/export/printedLabels/month" class="btn btn-primary">Mes</a>
+                    <a href="http://localhost:3000/api/export/printedLabels/all" class="btn btn-primary">Todos</a>
                 </div>
             </div>
         </div>
@@ -130,6 +131,7 @@ export default defineComponent({
                 { text: 'Dígitos', value: 'digits' },
                 { text: 'Número de parte', value: 'partNumber' },
                 { text: 'Referencia', value: 'reference' },
+                { text: 'Ficha que se usó', value: 'tokenId' },
                 { text: 'Fecha de impresión', value: 'createdAt' },
                 { text: 'Reimprimir etiqueta', value: 'print' }
             ]
