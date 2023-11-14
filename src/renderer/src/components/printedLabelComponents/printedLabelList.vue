@@ -21,7 +21,7 @@
                     label="text"
                     :allow-empty="false"
                     required
-                    :preselectFirst= true
+                    :preselectFirst="true"
                 >
                 </VueMultiselect>
             </div>
@@ -30,10 +30,26 @@
             <div class="mb-3 d-flex align-items-center">
                 <h3 class="me-3">Exportar:</h3>
                 <div class="btn-group">
-                    <a href="http://localhost:3000/api/export/printedLabels/today" class="btn btn-primary">Hoy</a>
-                    <a href="http://localhost:3000/api/export/printedLabels/week" class="btn btn-primary">Semana</a>
-                    <a href="http://localhost:3000/api/export/printedLabels/month" class="btn btn-primary">Mes</a>
-                    <a href="http://localhost:3000/api/export/printedLabels/all" class="btn btn-primary">Todos</a>
+                    <a
+                        href="http://localhost:3000/api/export/printedLabels/today"
+                        class="btn btn-primary"
+                        >Hoy</a
+                    >
+                    <a
+                        href="http://localhost:3000/api/export/printedLabels/week"
+                        class="btn btn-primary"
+                        >Semana</a
+                    >
+                    <a
+                        href="http://localhost:3000/api/export/printedLabels/month"
+                        class="btn btn-primary"
+                        >Mes</a
+                    >
+                    <a
+                        href="http://localhost:3000/api/export/printedLabels/all"
+                        class="btn btn-primary"
+                        >Todos</a
+                    >
                 </div>
             </div>
         </div>
@@ -170,8 +186,10 @@ export default defineComponent({
             const day = String(date.getDate()).padStart(2, '0')
             const month = String(date.getMonth() + 1).padStart(2, '0')
             const year = date.getFullYear()
+            const hours = String(date.getHours()).padStart(2, '0')
+            const minutes = String(date.getMinutes()).padStart(2, '0')
 
-            return `${day}/${month}/${year}`
+            return `${day}/${month}/${year} - ${hours}:${minutes}`
         },
         async goToPrintPage(printedLabelId) {
             try {
