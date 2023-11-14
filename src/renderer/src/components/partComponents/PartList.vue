@@ -32,17 +32,13 @@
             alternating
             buttons-pagination
         >
-            <template #loading>
-                <div class="d-flex justify-content-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
-            </template>
-
-            <template #empty-message>
+            <template #empty-message v-if="hasRequested">
                 <div class="mb-3 mt-3">
                     <h4 class="text-center">Sin registros</h4>
+                </div>
+            </template>
+            <template #empty-message v-else>
+                <div class="spinner-border m-5 text-primary" style="width: 3rem; height: 3rem;" role="status">
                 </div>
             </template>
 
@@ -135,6 +131,7 @@ export default defineComponent({
     components: { VueMultiselect },
     data() {
         return {
+            hasRequested: false,
             searchField: {},
             parts: [],
             searchValue: '',
@@ -159,6 +156,7 @@ export default defineComponent({
             try {
                 const res = await getParts()
                 this.parts = res.data
+                this.hasRequested = true
             } catch (error) {
                 console.log(error)
             }
