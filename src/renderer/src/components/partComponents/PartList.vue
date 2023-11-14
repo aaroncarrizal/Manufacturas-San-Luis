@@ -1,20 +1,34 @@
 <template>
     <div class="container-lg">
         <p class="h1 text-center my-3">Partes registradas</p>
-        <div class="mb-3">
-            <input
-                type="text"
-                class="form-control"
-                id="qr"
-                aria-describedby="qrHelp"
-                v-model="searchValue"
-                placeholder="Buscar por QR, número de parte o ficha asociada"
-            />
+        <div class="row mb-3">
+            <div class="col-9">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="qr"
+                    aria-describedby="qrHelp"
+                    v-model="searchValue"
+                    placeholder="Buscar por:"
+                />
+            </div>
+            <div class="col-3">
+                <VueMultiselect
+                    v-model="searchField"
+                    :options="headers.slice(0, 5)"
+                    label="text"
+                    :allow-empty="false"
+                    required
+                    :preselectFirst= true
+                >
+                </VueMultiselect>
+            </div>
         </div>
         <EasyDataTable
             :headers="headers"
             :items="parts"
             :search-value="searchValue"
+            :search-field="searchField.value"
             alternating
             buttons-pagination
         >
@@ -115,10 +129,13 @@
 <script>
 import { defineComponent } from 'vue'
 import { getParts, printPart } from '../../../services/PartService'
+import VueMultiselect from 'vue-multiselect'
 
 export default defineComponent({
+    components: { VueMultiselect },
     data() {
         return {
+            searchField: {},
             parts: [],
             searchValue: '',
             message: null,
@@ -171,3 +188,4 @@ export default defineComponent({
     }
 })
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

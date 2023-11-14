@@ -3,16 +3,27 @@
         <div class="row">
             <h1 class="text-center my-3">Etiquetas impresas</h1>
         </div>
-        <div class="row">
-            <div class="mb-3">
+        <div class="row mb-3">
+            <div class="col-9">
                 <input
                     type="text"
                     class="form-control"
                     id="qr"
                     aria-describedby="qrHelp"
                     v-model="searchValue"
-                    placeholder="Buscar por QR, número de parte o referencia"
+                    placeholder="Buscar por:"
                 />
+            </div>
+            <div class="col-3">
+                <VueMultiselect
+                    v-model="searchField"
+                    :options="headers.slice(0, 6)"
+                    label="text"
+                    :allow-empty="false"
+                    required
+                    :preselectFirst= true
+                >
+                </VueMultiselect>
             </div>
         </div>
         <div class="row">
@@ -30,6 +41,7 @@
             :headers="headers"
             :items="printedLabels"
             :search-value="searchValue"
+            :search-field="searchField.value"
             alternating
             buttons-pagination
         >
@@ -118,10 +130,13 @@
 <script>
 import { defineComponent } from 'vue'
 import { getPrintedLabels, reprintPrintedLabel } from '../../../services/PrintedLabelService'
+import VueMultiselect from 'vue-multiselect'
 
 export default defineComponent({
+    components: { VueMultiselect },
     data() {
         return {
+            searchField: {},
             printedLabels: [],
             searchValue: '',
             message: null,
@@ -175,3 +190,4 @@ export default defineComponent({
     }
 })
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>
