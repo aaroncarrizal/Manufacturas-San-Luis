@@ -15,7 +15,7 @@
             <div class="col-3">
                 <VueMultiselect
                     v-model="searchField"
-                    :options="headers.slice(0, 5)"
+                    :options="fields"
                     label="text"
                     :allow-empty="false"
                     required
@@ -145,7 +145,13 @@ export default defineComponent({
                 { text: 'Fecha de registro', value: 'updatedAt' },
                 { text: 'Imprimir etiqueta', value: 'print' },
                 { text: 'Editar', value: 'edit' }
-            ]
+            ],
+            fields: [
+                { text: 'QR o SKU', value: 'qr' },
+                { text: 'Dígitos', value: 'digits' },
+                { text: 'Número de parte', value: 'partNumber' },
+                { text: 'Ficha asociada', value: 'tokenId' },
+            ],
         }
     },
     mounted() {
