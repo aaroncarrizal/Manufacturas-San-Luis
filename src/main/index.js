@@ -78,16 +78,23 @@ app.on('window-all-closed', () => {
 export async function print(part, model) {
     let filePath
     try {
+        // Determine QR Code size
+        let qrSize = 4
+        let textSize = 15
+        if(part.qr.length >= 15){
+            qrSize = 3
+            textSize = 12
+        }
         // Create zpl file
         const user = os.userInfo().username
         filePath = path.join(`C:\\Users\\${user}\\Documents`, `${part.tokenId}.zpl`)
         const zpl = `^XA
         ^FO5,5
-        ^BXN,4,200
+        ^BXN,${qrSize},200
         ^FD${part.qr}^FS
 
         ^LH0,0
-        ^FO80,30^A0B,15,12^FD${part.qr}^FS
+        ^FO80,30^A0B,${textSize},12^FD${part.qr}^FS
 
         ^FO120,5
         ^A0N,22,22
@@ -110,8 +117,8 @@ export async function print(part, model) {
         // Get name of the PC
         const hostname = os.hostname()
 
-        const command = `COPY /B "${filePath}" "\\\\${hostname}\\ZDesigner"`
-        // const command = `start explorer.exe ${filePath}`
+        // const command = `COPY /B "${filePath}" "\\\\${hostname}\\ZDesigner"`
+        const command = `start explorer.exe ${filePath}`
 
         const stdout = execSync(command).toString() // Execute the command synchronously and capture the output as a string
         console.log(`Command output:\n${stdout}`)
