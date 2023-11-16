@@ -89,25 +89,25 @@ export async function print(part, model) {
         const user = os.userInfo().username
         filePath = path.join(`C:\\Users\\${user}\\Documents`, `${part.tokenId}.zpl`)
         const zpl = `^XA
-        ^FO5,5
+        ^FO5,25
         ^BXN,${qrSize},200
         ^FD${part.qr}^FS
 
         ^LH0,0
         ^FO80,30^A0B,${textSize},12^FD${part.qr}^FS
 
-        ^FO120,5
+        ^FO120,15
         ^A0N,22,22
         ^FD${model.digits}^FS
 
-        ^FO110,25^GB20,10,10^FS
-        ^FO145,25^GB20,10,10^FS
+        ^FO110,35^GB20,10,10^FS
+        ^FO145,35^GB20,10,10^FS
 
-        ^FO95,40
+        ^FO95,50
         ^A0N,15,15
         ^FD${model.reference}^FS
 
-        ^FO125,60
+        ^FO125,70
         ^A0N,12,12
         ^FD${part.tokenId}^FS
 
@@ -117,8 +117,8 @@ export async function print(part, model) {
         // Get name of the PC
         const hostname = os.hostname()
 
-        // const command = `COPY /B "${filePath}" "\\\\${hostname}\\ZDesigner"`
-        const command = `start explorer.exe ${filePath}`
+        const command = `COPY /B "${filePath}" "\\\\${hostname}\\ZDesigner"`
+        // const command = `start explorer.exe ${filePath}`
 
         const stdout = execSync(command).toString() // Execute the command synchronously and capture the output as a string
         console.log(`Command output:\n${stdout}`)
