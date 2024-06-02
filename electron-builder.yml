@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: Manufacturas San Luis
+productName: MSL monterrey
 directories:
   buildResources: build
 files:
@@ -11,7 +11,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: Manufacturas San Luis
+  executableName: MSL monterrey
   icon: resources/icon.png
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
