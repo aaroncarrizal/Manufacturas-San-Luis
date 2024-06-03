@@ -57,6 +57,10 @@
                 {{ formatDate(item.updatedAt) }}
             </template>
 
+            <template #item-date="item">
+                {{ item.date + ' - ' + item.time }}
+            </template>
+
             <template #item-edit="item">
                 <div class="operation-wrapper">
                     <router-link :to="'/parts/edit/' + item.id" class="btn btn-warning">
@@ -141,6 +145,7 @@ export default defineComponent({
                 { text: 'SKU', value: 'sku' },
                 { text: 'Dígitos', value: 'digits' },
                 { text: 'Número de parte', value: 'partNumber' },
+                { text: 'Fecha y hora de la etiqueta', value: 'date' },
                 { text: 'Ficha asociada', value: 'tokenId' },
                 { text: 'Fecha de registro', value: 'updatedAt' },
                 { text: 'Imprimir etiqueta', value: 'print' },
@@ -195,3 +200,4 @@ export default defineComponent({
 })
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
+

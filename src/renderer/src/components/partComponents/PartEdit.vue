@@ -14,6 +14,29 @@
                 />
             </div>
             <div class="mb-3">
+                <label for="date" class="form-label">Fecha</label>
+                <input
+                    type="date"
+                    class="form-control"
+                    id="date"
+                    aria-describedby="date"
+                    v-model="part.date"
+                    required
+                />
+            </div>
+            <div class="mb-3">
+                <label for="time" class="form-label">Hora</label>
+                <input
+                    type="time"
+                    class="form-control"
+                    id="time"
+                    aria-describedby="time"
+                    v-model="part.time"
+                    step="any"
+                    required
+                />
+            </div>
+            <div class="mb-3">
                 <label for="tokenId" class="form-label">Dígitos</label>
                 <VueMultiselect
                     v-model="this.selectedModel"

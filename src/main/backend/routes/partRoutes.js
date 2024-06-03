@@ -68,7 +68,9 @@ router.patch('/parts/:id', async (req, res) => {
             {
                 qr: req.body.qr,
                 tokenId: req.body.tokenId,
-                modelId: req.body.modelId
+                modelId: req.body.modelId,
+                date: req.body.date,
+                time: req.body.time
             },
             { where: { id: req.params.id } }
         )

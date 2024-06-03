@@ -15,6 +15,14 @@ const Part = db.define('Parts', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    date: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    time: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     tokenId: {
         type: DataTypes.INTEGER,
         allowNull: false,
