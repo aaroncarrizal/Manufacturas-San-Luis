@@ -44,7 +44,9 @@ router.get('/printedLabels/print/:id', async (req, res) => {
         const printedLabel = await PrintedLabel.findByPk(req.params.id)
         const part = {
             qr: printedLabel.qr,
-            tokenId: printedLabel.id
+            tokenId: printedLabel.id,
+            date: printedLabel.date,
+            time: printedLabel.time
         }
         const model = {
             partNumber: printedLabel.partNumber,

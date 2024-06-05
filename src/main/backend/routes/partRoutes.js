@@ -136,7 +136,9 @@ router.get('/parts/print/:id', async (req, res) => {
             digits: model.digits,
             partNumber: model.partNumber,
             reference: model.reference,
-            tokenId: part.tokenId
+            tokenId: part.tokenId,
+            date: part.date,
+            time: part.time
         })
         await printedLabel.save()
         // Delete part

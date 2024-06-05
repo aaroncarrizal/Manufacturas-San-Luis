@@ -29,6 +29,14 @@ const PrintedLabel = db.define('PrintedLabels', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
+    },
+    date: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    time: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 })
 

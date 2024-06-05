@@ -86,6 +86,9 @@
             <template #item-createdAt="item">
                 {{ formatDate(item.createdAt) }}
             </template>
+            <template #item-date="item">
+                {{ item.date + ' - ' + item.time }}
+            </template>
             <template #item-print="item">
                 <div class="operation-wrapper">
                     <button
@@ -162,6 +165,7 @@ export default defineComponent({
                 { text: 'SKU', value: 'sku' },
                 { text: 'Dígitos', value: 'digits' },
                 { text: 'Número de parte', value: 'partNumber' },
+                { text: 'Fecha y hora de la etiqueta', value: 'date' },
                 { text: 'Referencia', value: 'reference' },
                 { text: 'Ficha que se usó', value: 'tokenId' },
                 { text: 'Fecha de impresión', value: 'createdAt' },
