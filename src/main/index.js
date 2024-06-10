@@ -91,16 +91,16 @@ export async function print(part, model) {
         const zpl = `^XA
 
         ^FO10,10
-        ^A0,18,15^FD${model.reference}^FS
+        ^A0,18,18^FD${model.reference}^FS
         ^FO10,35
-        ^A0,18,15^FD${part.time}^FS
+        ^A0,18,18^FD${part.time}^FS
         ^FO10,55
-        ^A0,18,15^FD${part.date}^FS
+        ^A0,18,18^FD${part.date}^FS
         ^FO10,75
-        ^A0,18,10^FD${model.partNumber}^FS
+        ^A0,18,12^FD${model.partNumber}^FS
 
         ^FO32,95
-        ^A0,18,15
+        ^A0,18,18
         ^FD${model.digits}^FS
         ^FO20,115
         ^GB20,10,10^FS
@@ -108,11 +108,11 @@ export async function print(part, model) {
         ^GB20,10,10^FS
 
         ^FO130,35
-        ^BXN,5,200
+        ^BXN,4,200
         ^FD${part.qr}^FS
 
         ^FO10,140
-        ^A0,12,10^FD${part.qr}^FS
+        ^A0,12,12^FD${part.qr}^FS
 
         ^XZ`
 
