@@ -107,8 +107,8 @@ export async function print(part, model) {
         ^FO50,115
         ^GB20,10,10^FS
 
-        ^FO130,35
-        ^BXN,4,200
+        ^FO130,45
+        ^BXN,3,200
         ^FD${part.qr}^FS
 
         ^FO10,140
