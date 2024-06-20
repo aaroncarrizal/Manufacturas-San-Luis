@@ -15,12 +15,27 @@ backend.use('/api', partRoutes)
 backend.use('/api', tokenRoutes)
 backend.use('/api', modelRoutes)
 backend.use('/api', printedLabelRoutes)
+
 // Connect db
 db.connect()
+
 // Express server
-const port = 3000
-backend.listen(port, () => {
-    console.log(`Server listening on port ${port}`)
-})
+const startServer = (port) => {
+    const server = backend.listen(port, () => {
+        console.log(`Server listening on port ${port}`)
+    })
+
+    server.on('error', (error) => {
+        if (error.code === 'EADDRINUSE') {
+            console.log(`Port ${port} is already in use, trying port ${port + 1}`)
+            startServer(port + 1)
+        } else {
+            console.error(error)
+        }
+    })
+}
+
+const initialPort = 3000
+startServer(initialPort)
 
 export default backend
